@@ -1,75 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>README - Script de Automação de Clique</title>
-</head>
-<body>
-    <h1>Automação de Clique no Botão "Pular"</h1>
+Este código utiliza as bibliotecas PyAutoGUI, time e OpenCV para automatizar a tarefa de encontrar uma imagem (no caso, o botão "pular") em uma interface gráfica e clicar nela repetidamente. Aqui está uma descrição detalhada do funcionamento:
 
-    <p>Este script foi desenvolvido para automatizar a tarefa de encontrar e clicar em um botão "pular" em uma interface gráfica. O código utiliza a biblioteca <code>PyAutoGUI</code> para realizar a automação e a função <code>locateOnScreen</code> para detectar a presença da imagem do botão na tela.</p>
+Importação de Bibliotecas:
 
-    <h2>Funcionalidade</h2>
-    <ul>
-        <li>Localiza a imagem do botão "pular" em uma interface gráfica.</li>
-        <li>Clica automaticamente no botão, caso ele seja encontrado.</li>
-        <li>Repete o processo indefinidamente até que o programa seja encerrado.</li>
-        <li>Inclui pausas de 2 segundos entre os cliques para evitar ações repetidas em um curto intervalo de tempo.</li>
-    </ul>
+PyAutoGUI: usada para realizar interações automatizadas na tela, como encontrar imagens, clicar em posições específicas, etc.
+time: utilizada para gerenciar pausas no código e evitar que ações ocorram muito rapidamente.
+cv2 (OpenCV): embora importada, não está sendo utilizada diretamente no código. Provavelmente foi incluída por causa de operações com imagens que podem ser necessárias em outro contexto.
+Variável imagem:
 
-    <h2>Pré-requisitos</h2>
-    <p>Certifique-se de que as seguintes bibliotecas Python estejam instaladas no seu ambiente:</p>
-    <ul>
-        <li><a href="https://pyautogui.readthedocs.io/en/latest/">PyAutoGUI</a> (biblioteca principal para a automação na tela)</li>
-        <li><a href="https://docs.opencv.org/">OpenCV</a> (embora não usada diretamente, pode ser útil para trabalhar com imagens)</li>
-    </ul>
+Armazena o caminho da imagem que o script tentará localizar na tela. A imagem é uma captura do botão "pular".
+Loop Infinito:
 
-    <h2>Instalação</h2>
-    <pre><code>pip install pyautogui opencv-python</code></pre>
+O código entra em um loop infinito com while True, onde ele constantemente verifica se a imagem do botão "pular" está visível na tela.
+Localização da Imagem na Tela:
 
-    <h2>Como Usar</h2>
-    <p>Siga os passos abaixo para executar o script:</p>
-    <ol>
-        <li>Capture uma imagem do botão "pular" na interface gráfica que você deseja automatizar.</li>
-        <li>Salve a imagem em um diretório local e atualize a variável <code>imagem</code> no código com o caminho correto da imagem.</li>
-        <li>Execute o script em seu ambiente Python.</li>
-    </ol>
+Dentro do loop, o código usa a função pyautogui.locateOnScreen(imagem, confidence=0.8), que tenta localizar a imagem do botão "pular" na tela, com 80% de confiança. Se a imagem for encontrada, as coordenadas de sua posição são retornadas e armazenadas na variável posicao.
+Clique no Botão:
 
-    <h3>Exemplo de Uso:</h3>
-    <pre><code>
-import pyautogui
-import time
+Se o botão for localizado (if posicao), o código imprime a posição da imagem e em seguida usa a função pyautogui.center(posicao) para obter o centro da área onde a imagem foi encontrada. Com isso, pyautogui.click() é chamado para clicar nessa posição.
+Pausa entre Cliques:
 
-# Caminho da imagem do botão pular
-imagem = 'files/pular.png'
+Após clicar no botão, o código faz uma pausa de 2 segundos com time.sleep(2) para evitar múltiplos cliques consecutivos sem intervalos.
+Caso a Imagem Não Seja Encontrada:
 
-# Loop infinito para verificar a imagem na tela constantemente 
-while True:
-    try:
-        # Tentar encontrar o botão pular na tela
-        posicao = pyautogui.locateOnScreen(imagem, confidence=0.8)
+Se a imagem não for encontrada, o código imprime "..." e continua a buscar no loop.
+Tratamento de Exceções:
 
-        # Se o botão pular for encontrado
-        if posicao:
-            print(f"Botão encontrado em {posicao}")
-            # Clique no centro de pular
-            pyautogui.click(pyautogui.center(posicao))
-
-            # Pausa para não clicar várias vezes
-            time.sleep(2)
-        else:
-            print("...")
-
-    except Exception as e:
-        print(f"Erro: {e}")
-        time.sleep(1)
-    </code></pre>
-
-    <h2>Considerações</h2>
-    <p>Esse script utiliza um loop infinito para garantir que o botão seja encontrado e clicado sempre que estiver disponível na tela. No entanto, recomenda-se adicionar uma condição de saída ou monitoramento mais avançado caso seja utilizado em cenários mais complexos.</p>
-
-    <h2>Licença</h2>
-    <p>Este projeto está licenciado sob a <strong>MIT License</strong>.</p>
-</body>
-</html>
+Há uma tentativa de capturar a exceção pyautogui.ImageNotFoundException, que seria lançada caso a imagem não pudesse ser encontrada. No entanto, essa exceção não faz parte da biblioteca PyAutoGUI. O correto seria apenas o loop condicional, sem a captura dessa exceção específica.
